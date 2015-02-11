@@ -17,6 +17,8 @@ class PlayScene: SKScene {
     
     let dragonRight1 = SKSpriteNode(imageNamed: "Dragon Right")
     
+    var ground = SKSpriteNode()
+    
     override func didMoveToView(view: SKView) {
         
         self.backgroundColor = UIColor.whiteColor()
@@ -34,8 +36,8 @@ class PlayScene: SKScene {
 
         //Dragon
         
-        self.dragonRight1.position = CGPointMake(100, 100)
-        dragonRight1.setScale(0.30)
+        self.dragonRight1.position = CGPointMake(CGRectGetMinX(self.frame) + 17, 200)
+        dragonRight1.setScale(0.50)
         
         // Phisics
         self.physicsWorld.gravity = CGVectorMake(0.0, -7.0)
@@ -45,7 +47,7 @@ class PlayScene: SKScene {
         chineseTexture.filteringMode = SKTextureFilteringMode.Nearest
         
         chinese = SKSpriteNode(texture: chineseTexture)
-        chinese.setScale(0.5)
+        chinese.setScale(0.6)
         chinese.position = CGPointMake(self.frame.size.width * 0.5, self.frame.size.height * 0.5)
         
         chinese.physicsBody = SKPhysicsBody(circleOfRadius: chinese.size.height / 2.0)
@@ -54,15 +56,14 @@ class PlayScene: SKScene {
     
         // Ground
         var groundTexture = SKTexture(imageNamed: "Ground")
-        var sprite = SKSpriteNode(texture: groundTexture)
-        sprite.position = CGPointMake(self.size.width/2.0, sprite.size.height/2.0)
         
-        var ground = SKNode()
+        ground = SKSpriteNode(texture: groundTexture)
+        ground.setScale(0.95)
+        ground.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinX(self.frame))
         
-        ground.position = CGPointMake(0, groundTexture.size().height)
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 2.0))
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 0.76))
         
-        ground.physicsBody?.dynamic = false
+        ground.physicsBody!.dynamic = false
         
         self.addChild(background)
         self.addChild(chinese)
@@ -86,7 +87,7 @@ class PlayScene: SKScene {
             self.nodeAtPoint(location)
             
             chinese.physicsBody?.velocity = CGVectorMake(0, 0)
-            chinese.physicsBody?.applyImpulse(CGVectorMake(0, 150))
+            chinese.physicsBody?.applyImpulse(CGVectorMake(0, 175))
 
         }
     }

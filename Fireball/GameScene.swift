@@ -18,6 +18,8 @@ class GameScene: SKScene {
     let dragonRight = SKSpriteNode(imageNamed: "Dragon Right")
     let dragonLeft = SKSpriteNode(imageNamed: "Dragon Left")
     
+    var ground = SKSpriteNode()
+    
     var chinese = SKSpriteNode()
 
     let musicOffButton = SKSpriteNode(imageNamed: "Music OFF")
@@ -32,6 +34,7 @@ class GameScene: SKScene {
         self.backgroundColor = UIColor.whiteColor()
         
         self.background.position = CGPointMake(CGRectGetMidX(self.frame),CGRectGetMidY(self.frame))
+        background.zPosition = -1
         self.addChild(self.background)
         
         self.fireball.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMaxY(self.frame) - 40)
@@ -56,8 +59,7 @@ class GameScene: SKScene {
         
         chinese = SKSpriteNode(texture: chineseTexture)
         chinese.setScale(0.6)
-        chinese.position = CGPointMake(CGRectGetMidX(self.frame), self.frame.size.height * 0.5)
-        
+        chinese.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))
         
         chinese.physicsBody = SKPhysicsBody(circleOfRadius: chinese.size.height / 2.0)
         chinese.physicsBody!.dynamic = true
@@ -67,16 +69,14 @@ class GameScene: SKScene {
         
         // Ground
         var groundTexture = SKTexture(imageNamed: "Ground")
-        var sprite = SKSpriteNode(texture: groundTexture)
-        sprite.setScale(0.35)
-        sprite.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinX(self.frame))
         
-        var ground = SKNode()
+        ground = SKSpriteNode(texture: groundTexture)
+        ground.setScale(0.95)
+        ground.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinX(self.frame))
         
-        ground.position = CGPointMake(0, groundTexture.size().height)
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 2.0))
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 0.76))
         
-        ground.physicsBody?.dynamic = false
+        ground.physicsBody!.dynamic = false
         self.addChild(ground)
                 
         // Menu
