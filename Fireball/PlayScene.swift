@@ -42,18 +42,6 @@ class PlayScene: SKScene {
         // Phisics
         self.physicsWorld.gravity = CGVectorMake(0.0, -7.0)
         
-        //Chinese
-        var chineseTexture = SKTexture(imageNamed: "Chinese")
-        chineseTexture.filteringMode = SKTextureFilteringMode.Nearest
-        
-        chinese = SKSpriteNode(texture: chineseTexture)
-        chinese.setScale(0.6)
-        chinese.position = CGPointMake(self.frame.size.width * 0.5, self.frame.size.height * 0.5)
-        
-        chinese.physicsBody = SKPhysicsBody(circleOfRadius: chinese.size.height / 2.0)
-        chinese.physicsBody!.dynamic = true
-        chinese.physicsBody!.allowsRotation = false
-    
         // Ground
         var groundTexture = SKTexture(imageNamed: "Ground")
         
@@ -64,6 +52,20 @@ class PlayScene: SKScene {
         ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 0.76))
         
         ground.physicsBody!.dynamic = false
+        
+        //Chinese
+        var chineseTexture = SKTexture(imageNamed: "Chinese")
+        chineseTexture.filteringMode = SKTextureFilteringMode.Nearest
+        
+        chinese = SKSpriteNode(texture: chineseTexture)
+        chinese.setScale(0.6)
+        chinese.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinY(self.frame) + groundTexture.size().height * 0.76)
+        
+        chinese.physicsBody = SKPhysicsBody(circleOfRadius: chinese.size.height / 2.0)
+        chinese.physicsBody!.dynamic = true
+        chinese.physicsBody!.allowsRotation = false
+        
+
         
         self.addChild(background)
         self.addChild(chinese)

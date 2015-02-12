@@ -33,6 +33,8 @@ class GameScene: SKScene {
         /* Setup your scene here */
         self.backgroundColor = UIColor.whiteColor()
         
+        self.physicsWorld.gravity = CGVectorMake(0.0, -7.0)
+        
         self.background.position = CGPointMake(CGRectGetMidX(self.frame),CGRectGetMidY(self.frame))
         background.zPosition = -1
         self.addChild(self.background)
@@ -44,28 +46,13 @@ class GameScene: SKScene {
         tapToStart.setScale(0.6)
         self.addChild(self.tapToStart)
         
-        self.dragonRight.position = CGPointMake(20, CGRectGetMidY(self.frame))
-        dragonRight.setScale(0.75)
+        self.dragonRight.position = CGPointMake(20, CGRectGetMidY(self.frame) + 40)
+        dragonRight.setScale(0.70)
         self.addChild(self.dragonRight)
         
-        self.dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 20, CGRectGetMidY(self.frame))
-        dragonLeft.setScale(0.75)
+        self.dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 20, CGRectGetMidY(self.frame) + 40)
+        dragonLeft.setScale(0.70)
         self.addChild(self.dragonLeft)
-        
-        
-        //Chinese
-        var chineseTexture = SKTexture(imageNamed: "Chinese")
-        chineseTexture.filteringMode = SKTextureFilteringMode.Nearest
-        
-        chinese = SKSpriteNode(texture: chineseTexture)
-        chinese.setScale(0.6)
-        chinese.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))
-        
-        chinese.physicsBody = SKPhysicsBody(circleOfRadius: chinese.size.height / 2.0)
-        chinese.physicsBody!.dynamic = true
-        chinese.physicsBody!.allowsRotation = false
-        
-        self.addChild(chinese)
         
         // Ground
         var groundTexture = SKTexture(imageNamed: "Ground")
@@ -78,6 +65,21 @@ class GameScene: SKScene {
         
         ground.physicsBody!.dynamic = false
         self.addChild(ground)
+        
+        //Chinese
+        var chineseTexture = SKTexture(imageNamed: "Chinese")
+        chineseTexture.filteringMode = SKTextureFilteringMode.Nearest
+        
+        chinese = SKSpriteNode(texture: chineseTexture)
+        chinese.setScale(0.6)
+        chinese.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinY(self.frame) + groundTexture.size().height)
+        
+        chinese.physicsBody = SKPhysicsBody(circleOfRadius: chinese.size.height / 2.0)
+        chinese.physicsBody!.dynamic = true
+        chinese.physicsBody!.allowsRotation = false
+        chinese.zPosition = 3
+        
+        self.addChild(chinese)
                 
         // Menu
         
@@ -99,6 +101,14 @@ class GameScene: SKScene {
         //self.soundOffButton.position = CGPointMake()
         //self.addChild(self.soundOffButton)
         
+        
+        jumpChinese();
+    }
+    
+    func jumpChinese(){
+        let action = SKAction.moveBy(CGVector(dx: 0, dy: 3000), duration: 10);
+        let repeatForever = SKAction.repeatActionForever(action)
+        chinese.runAction(repeatForever);
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
@@ -110,11 +120,12 @@ class GameScene: SKScene {
             self.nodeAtPoint(location)
             var scene = PlayScene(size: self.size)
             let skView = self.view as SKView!
+            let reveal = SKTransition.fadeWithColor(UIColor.whiteColor(), duration: 1)
             skView.ignoresSiblingOrder = true
             scene.scaleMode = .ResizeFill
             scene.size = skView.bounds.size
-            skView.presentScene(scene)
-        }
+            self.view?.presentScene(scene, transition: reveal)
+            }
     }
     
        override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
