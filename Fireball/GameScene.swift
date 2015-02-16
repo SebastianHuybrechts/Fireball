@@ -7,6 +7,7 @@
 //
 
 import Spritekit
+import AVFoundation
 
 class GameScene: SKScene {
 
@@ -22,21 +23,44 @@ class GameScene: SKScene {
     
     var chinese = SKSpriteNode()
 
-    let musicOffButton = SKSpriteNode(imageNamed: "Music OFF")
-    let musicOnButton = SKSpriteNode(imageNamed: "Music ON")
-    let soundOffButton = SKSpriteNode(imageNamed: "Sound OFF")
-    let soundOnButton = SKSpriteNode(imageNamed: "Sound ON")
-    let rankingButton = SKSpriteNode(imageNamed: "Ranking")
     let noAdsButton = SKSpriteNode(imageNamed: "No Ads")
+    let noAds1Button = SKSpriteNode(imageNamed: "No Ads1")
+    
+    let rankingButton = SKSpriteNode(imageNamed: "Ranking")
+    let ranking1Button = SKSpriteNode(imageNamed: "Ranking1")
+    
+    let musicOffButton = SKSpriteNode(imageNamed: "Music OFF")
+    let musicOff1Button = SKSpriteNode(imageNamed: "Music OFF1")
+    let musicOnButton = SKSpriteNode(imageNamed: "Music ON")
+    
+    let soundOffButton = SKSpriteNode(imageNamed: "Sound OFF")
+    let soundOff1Button = SKSpriteNode(imageNamed: "Sound OFF1")
+    let soundOnButton = SKSpriteNode(imageNamed: "Sound ON")
+    
+    var audioPlayer = AVAudioPlayer()
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
-        self.backgroundColor = UIColor.whiteColor()
         
+        // Music
+        var startScreen = NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource("Startscreen", ofType: "mp3")!)
+        
+        AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error: nil)
+        AVAudioSession.sharedInstance().setActive(true, error: nil)
+        
+        var error:NSError?
+        audioPlayer = AVAudioPlayer(contentsOfURL: startScreen, error: &error)
+        audioPlayer.prepareToPlay()
+        audioPlayer.play()
+        
+        // PhysicsWorld
         self.physicsWorld.gravity = CGVectorMake(0.0, -7.0)
         
+        //Background
+        self.backgroundColor = UIColor.whiteColor()
+        
         self.background.position = CGPointMake(CGRectGetMidX(self.frame),CGRectGetMidY(self.frame))
-        background.zPosition = -1
+        background.zPosition = -5
         self.addChild(self.background)
         
         self.fireball.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMaxY(self.frame) - 40)
@@ -59,6 +83,7 @@ class GameScene: SKScene {
         
         ground = SKSpriteNode(texture: groundTexture)
         ground.setScale(0.95)
+        ground.zPosition = 2
         ground.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinX(self.frame))
         
         ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 0.76))
@@ -82,26 +107,56 @@ class GameScene: SKScene {
         self.addChild(chinese)
                 
         // Menu
-        
-        self.noAdsButton.position = CGPointMake(80, 200)
+        // No Ads
+        self.noAdsButton.position = CGPointMake(CGRectGetMinX(self.frame) + 50, CGRectGetMidY(self.frame) - 70)
+        noAdsButton.setScale(0.15)
         self.addChild(self.noAdsButton)
+        
+        self.noAds1Button.position = CGPointMake(CGRectGetMinX(self.frame) + 50, CGRectGetMidY(self.frame) - 70)
+        noAds1Button.setScale(0.15)
+        noAds1Button.zPosition = -1
+        self.addChild(self.noAds1Button)
 
-        self.rankingButton.position = CGPointMake(130, 200)
+        // Ranking
+        self.rankingButton.position = CGPointMake(CGRectGetMinX(self.frame) + 70, CGRectGetMidY(self.frame) - 130)
+        rankingButton.setScale(0.15)
         self.addChild(self.rankingButton)
         
-        self.musicOnButton.position = CGPointMake(180, 200)
+        self.ranking1Button.position = CGPointMake(CGRectGetMinX(self.frame) + 70, CGRectGetMidY(self.frame) - 130)
+        ranking1Button.setScale(0.15)
+        ranking1Button.zPosition = -1
+        self.addChild(self.ranking1Button)
+        
+        // Music
+        self.musicOnButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
+        musicOnButton.setScale(0.15)
         self.addChild(self.musicOnButton)
         
-        self.soundOnButton.position = CGPointMake(230, 200)
+        self.musicOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
+        musicOff1Button.zPosition = -0.5
+        musicOff1Button.setScale(0.15)
+        self.addChild(self.musicOff1Button)
+        
+        self.musicOffButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
+        musicOffButton.zPosition = -1
+        musicOffButton.setScale(0.15)
+        self.addChild(self.musicOffButton)
+        
+        // Sound
+        self.soundOnButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        soundOnButton.setScale(0.15)
         self.addChild(self.soundOnButton)
         
-        //self.musicOffButton.position = CGPointMake()
-        //self.addChild(self.musicOffButton)
+        self.soundOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        soundOff1Button.zPosition = -0.5
+        soundOff1Button.setScale(0.15)
+        self.addChild(self.soundOff1Button)
         
-        //self.soundOffButton.position = CGPointMake()
-        //self.addChild(self.soundOffButton)
-        
-        
+        self.soundOffButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        soundOffButton.zPosition = -1
+        soundOffButton.setScale(0.15)
+        self.addChild(self.soundOffButton)
+
         jumpChinese();
     }
     
@@ -116,8 +171,8 @@ class GameScene: SKScene {
         
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
-
-            self.nodeAtPoint(location)
+            
+            if self.nodeAtPoint(location) == self.background {
             var scene = PlayScene(size: self.size)
             let skView = self.view as SKView!
             let reveal = SKTransition.fadeWithColor(UIColor.whiteColor(), duration: 1)
@@ -126,15 +181,86 @@ class GameScene: SKScene {
             scene.size = skView.bounds.size
             self.view?.presentScene(scene, transition: reveal)
             }
+            
+            if self.nodeAtPoint(location) == self.noAdsButton {
+                noAdsButton.hidden = true
+                noAds1Button.hidden = false
+            }
+            
+            if self.nodeAtPoint(location) == self.rankingButton {
+                rankingButton.hidden = true
+                ranking1Button.hidden = false
+            }
+            
+            if self.nodeAtPoint(location) == self.musicOnButton {
+                musicOnButton.hidden = true
+                musicOff1Button.hidden = false
+                musicOffButton.hidden = true
+            }
+            
+            if self.nodeAtPoint(location) == self.soundOnButton {
+                soundOnButton.hidden = true
+                soundOff1Button.hidden = false
+                soundOffButton.hidden = true
+            }
+        }
+    }
+    
+    override func touchesMoved(touches: NSSet, withEvent event: UIEvent) {
+        for touch: AnyObject in touches{
+            let location = touch.locationInNode(self)
+            
+            if self.nodeAtPoint(location) == self.noAdsButton {
+                noAdsButton.hidden = false
+                noAds1Button.hidden = true
+            }
+            
+            if self.nodeAtPoint(location) == self.rankingButton {
+                rankingButton.hidden = false
+                ranking1Button.hidden = true
+            }
+            
+            if self.nodeAtPoint(location) == self.musicOnButton {
+                musicOnButton.hidden = false
+                musicOff1Button.hidden = true
+                musicOffButton.hidden = true
+            }
+            
+            if self.nodeAtPoint(location) == self.soundOnButton {
+                soundOnButton.hidden = false
+                soundOff1Button.hidden = true
+                soundOffButton.hidden = true
+            }
+        }
     }
     
        override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
         
             for touch: AnyObject in touches {
-            // Get the location of the touch in this scene
             let location = touch.locationInNode(self)
-            // Check if the location of the touch is within the button's bounds
-            
+                if self.nodeAtPoint(location) == self.noAdsButton {
+                    noAdsButton.hidden = false
+                    noAds1Button.hidden = true
+                }
+                
+                if self.nodeAtPoint(location) == self.rankingButton {
+                    rankingButton.hidden = false
+                    ranking1Button.hidden = true
+                }
+                
+                if self.nodeAtPoint(location) == self.musicOnButton {
+                    musicOnButton.hidden = true
+                    musicOff1Button.hidden = true
+                    musicOffButton.hidden = false
+                    audioPlayer.stop()
+                }
+                
+                if self.nodeAtPoint(location) == self.soundOnButton {
+                    soundOnButton.hidden = true
+                    soundOff1Button.hidden = true
+                    soundOffButton.hidden = false
+                }
+                
         }
         
 }

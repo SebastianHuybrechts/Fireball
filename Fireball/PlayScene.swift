@@ -15,7 +15,8 @@ class PlayScene: SKScene {
     var originalBackgroundPositionY = CGFloat(0)
     var maxBackgroundY = CGFloat(0)
     
-    let dragonRight1 = SKSpriteNode(imageNamed: "Dragon Right")
+    var dragonRight = SKSpriteNode(imageNamed: "Dragon Right")
+    var dragonLeft = SKSpriteNode(imageNamed: "Dragon Left")
     
     var ground = SKSpriteNode()
     
@@ -36,8 +37,11 @@ class PlayScene: SKScene {
 
         //Dragon
         
-        self.dragonRight1.position = CGPointMake(CGRectGetMinX(self.frame) + 17, 200)
-        dragonRight1.setScale(0.50)
+        self.dragonRight.position = CGPointMake(CGRectGetMinX(self.frame) + 17, CGRectGetMidY(self.frame)/2*3)
+        dragonRight.setScale(0.50)
+        
+        self.dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 17, CGRectGetMidY(self.frame))
+        dragonLeft.setScale(0.50)
         
         // Phisics
         self.physicsWorld.gravity = CGVectorMake(0.0, -7.0)
@@ -65,12 +69,11 @@ class PlayScene: SKScene {
         chinese.physicsBody!.dynamic = true
         chinese.physicsBody!.allowsRotation = false
         
-
-        
         self.addChild(background)
         self.addChild(chinese)
         self.addChild(ground)
-        self.addChild(self.dragonRight1)
+        self.addChild(self.dragonRight)
+        self.addChild(self.dragonLeft)
         
     }
     
