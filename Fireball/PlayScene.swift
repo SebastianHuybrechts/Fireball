@@ -14,35 +14,52 @@ class PlayScene: SKScene {
     var background = SKSpriteNode(imageNamed: "Background")
     var originalBackgroundPositionY = CGFloat(0)
     var maxBackgroundY = CGFloat(0)
+    var backgroundSpeed = 5
     
-    var dragonRight = SKSpriteNode(imageNamed: "Dragon Right")
-    var dragonLeft = SKSpriteNode(imageNamed: "Dragon Left")
+    var dragonRightTexture = SKTexture(imageNamed: "Dragon Right")
+    var dragonLeftTexture = SKTexture(imageNamed: "Dragon Left")
+    var dragonsMoveAndRemove = SKAction()
     
     var ground = SKSpriteNode()
+    
+    var score = 0
+    let scoreText = SKLabelNode(fontNamed: "Wonton by Da Font Mafia")
     
     override func didMoveToView(view: SKView) {
         
         self.backgroundColor = UIColor.whiteColor()
         
+        self.scoreText.text = "0"
+        self.scoreText.fontSize = 42
+        self.scoreText.fontColor = UIColor.darkGrayColor()
+        self.scoreText.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMaxY(self.frame)/4*3.3)
+        
         // Background
+        self.background.anchorPoint = CGPointMake(0.5, 0)
         self.background.position = CGPointMake(
             CGRectGetMidX(self.frame),
             CGRectGetMinY(self.frame))
-        
         background.zPosition = -1
 
         self.originalBackgroundPositionY = self.background.position.y
         self.maxBackgroundY = self.background.size.height - self.frame.size.height
         self.maxBackgroundY *= -1
 
-        //Dragon
+        // Dragon
+        // Movement of dragons
+        let distanceToMove = CGFloat(self.frame.size.height + 3.0 * dragonRightTexture.size().height * 2)
+        let moveDragons = SKAction.moveToY(-distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove))
+        let removeDragons = SKAction.removeFromParent()
         
-        self.dragonRight.position = CGPointMake(CGRectGetMinX(self.frame) + 17, CGRectGetMidY(self.frame)/2*3)
-        dragonRight.setScale(0.50)
+        dragonsMoveAndRemove = SKAction.sequence([moveDragons, removeDragons])
         
-        self.dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 17, CGRectGetMidY(self.frame))
-        dragonLeft.setScale(0.50)
-        
+        // Spawn Pipes
+        let spawn = SKAction.runBlock({() in self.spawnDragons()})
+        let delay = SKAction.waitForDuration(NSTimeInterval(2.5))
+        let spawnThenDelay = SKAction.sequence([spawn,delay])
+        let spawnThenDelayForever = SKAction.repeatActionForever(spawnThenDelay)
+        self.runAction(spawnThenDelayForever)
+      
         // Phisics
         self.physicsWorld.gravity = CGVectorMake(0.0, -7.0)
         
@@ -65,23 +82,42 @@ class PlayScene: SKScene {
         chinese.setScale(0.6)
         chinese.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinY(self.frame) + groundTexture.size().height * 0.76)
         
-        chinese.physicsBody = SKPhysicsBody(circleOfRadius: chinese.size.height / 2.0)
+        chinese.physicsBody = SKPhysicsBody(rectangleOfSize: chinese.size)
         chinese.physicsBody!.dynamic = true
         chinese.physicsBody!.allowsRotation = false
         
-        self.addChild(background)
-        self.addChild(chinese)
-        self.addChild(ground)
-        self.addChild(self.dragonRight)
-        self.addChild(self.dragonLeft)
+        self.addChild(self.background)
+        self.addChild(self.chinese)
+        self.addChild(self.ground)
+        self.addChild(self.scoreText)
         
     }
     
-    
     override func update(currentTime: NSTimeInterval) {
         if self.background.position.y <= maxBackgroundY {
-        self.background.position.y = self.originalBackgroundPositionY
+            self.background.position.y = self.originalBackgroundPositionY
         }
+        
+        background.position.y -= CGFloat(self.backgroundSpeed)
+    }
+    
+    func spawnDragons() {
+        let dragonPair = SKNode()
+        dragonPair.position = CGPointMake(0, self.frame.size.height)
+        
+        let dragonRight = SKSpriteNode(texture: dragonRightTexture)
+        dragonRight.setScale(0.5)
+        dragonRight.position = CGPointMake(CGRectGetMinX(self.frame) + 17, CGRectGetMaxY(self.frame) * 0.75)
+        dragonPair.addChild(dragonRight)
+        
+        let dragonLeft = SKSpriteNode(texture: dragonLeftTexture)
+        dragonLeft.setScale(0.5)
+        dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 17, CGRectGetMidY(self.frame))
+        dragonPair.addChild(dragonLeft)
+        
+        dragonPair.runAction(dragonsMoveAndRemove)
+        self.addChild(dragonPair)
+
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {

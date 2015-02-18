@@ -49,9 +49,10 @@ class GameScene: SKScene {
         AVAudioSession.sharedInstance().setActive(true, error: nil)
         
         var error:NSError?
-        audioPlayer = AVAudioPlayer(contentsOfURL: startScreen, error: &error)
+        audioPlayer = AVAudioPlayer(contentsOfURL: startScreen, error: nil)
         audioPlayer.prepareToPlay()
         audioPlayer.play()
+        audioPlayer.numberOfLoops = -1
         
         // PhysicsWorld
         self.physicsWorld.gravity = CGVectorMake(0.0, -7.0)
@@ -71,11 +72,11 @@ class GameScene: SKScene {
         self.addChild(self.tapToStart)
         
         self.dragonRight.position = CGPointMake(20, CGRectGetMidY(self.frame) + 40)
-        dragonRight.setScale(0.70)
+        dragonRight.setScale(0.65)
         self.addChild(self.dragonRight)
         
         self.dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 20, CGRectGetMidY(self.frame) + 40)
-        dragonLeft.setScale(0.70)
+        dragonLeft.setScale(0.65)
         self.addChild(self.dragonLeft)
         
         // Ground
