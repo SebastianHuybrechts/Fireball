@@ -162,7 +162,7 @@ class GameScene: SKScene {
     }
     
     func jumpChinese(){
-        let action = SKAction.moveBy(CGVector(dx: 0, dy: 3000), duration: 10);
+        let action = SKAction.moveBy(CGVector(dx: 0, dy: 3000), duration: 10)
         let repeatForever = SKAction.repeatActionForever(action)
         chinese.runAction(repeatForever);
     }
