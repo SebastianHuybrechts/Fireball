@@ -172,7 +172,19 @@ class GameScene: SKScene {
     
     override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
         
-        
+        for touch: AnyObject in touches {
+            let location = touch.locationInNode(self)
+            
+            if self.nodeAtPoint(location) == self.background {
+                var scene = PlayScene(size: self.size)
+                let skView = self.view as SKView!
+                let reveal = SKTransition.fadeWithColor(UIColor.whiteColor(), duration: 1)
+                skView.ignoresSiblingOrder = true
+                scene.scaleMode = .ResizeFill
+                scene.size = skView.bounds.size
+                self.view?.presentScene(scene, transition: reveal)
+            }
+        }
         
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
