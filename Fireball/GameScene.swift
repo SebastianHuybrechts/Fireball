@@ -32,10 +32,13 @@ class GameScene: SKScene {
     let musicOffButton = SKSpriteNode(imageNamed: "Music OFF")
     let musicOff1Button = SKSpriteNode(imageNamed: "Music OFF1")
     let musicOnButton = SKSpriteNode(imageNamed: "Music ON")
+    let musicOn1Button = SKSpriteNode(imageNamed: "Music ON1")
+
     
     let soundOffButton = SKSpriteNode(imageNamed: "Sound OFF")
     let soundOff1Button = SKSpriteNode(imageNamed: "Sound OFF1")
     let soundOnButton = SKSpriteNode(imageNamed: "Sound ON")
+    let soundOn1Button = SKSpriteNode(imageNamed: "Sound ON1")
     
     var audioPlayer = AVAudioPlayer()
     
@@ -134,24 +137,41 @@ class GameScene: SKScene {
         musicOnButton.setScale(0.15)
         self.addChild(self.musicOnButton)
         
-//        self.musicOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
-//        musicOff1Button.zPosition = -0.5
-//        musicOff1Button.setScale(0.15)
-//        self.addChild(self.musicOff1Button)
+        self.musicOn1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
+        musicOn1Button.zPosition = -1
+        musicOn1Button.setScale(0.15)
+        self.addChild(self.musicOn1Button)
+        
+        self.musicOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
+        musicOff1Button.zPosition = -0.5
+        musicOff1Button.setScale(0.15)
+        self.addChild(self.musicOff1Button)
         
         self.musicOffButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
         musicOffButton.zPosition = -1
         musicOffButton.setScale(0.15)
+        self.addChild(self.musicOffButton)
+        
+        musicOnButton.hidden = false
+        musicOn1Button.hidden = true
+        musicOffButton.hidden = true
+        musicOff1Button.hidden = true
+        
         
         // Sound
         self.soundOnButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
         soundOnButton.setScale(0.15)
         self.addChild(self.soundOnButton)
         
-//        self.soundOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
-//        soundOff1Button.zPosition = -0.5
-//        soundOff1Button.setScale(0.15)
-//        self.addChild(self.soundOff1Button)
+        self.soundOn1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        soundOn1Button.zPosition = -1
+        soundOn1Button.setScale(0.15)
+        self.addChild(self.soundOn1Button)
+        
+        self.soundOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        soundOff1Button.zPosition = -0.5
+        soundOff1Button.setScale(0.15)
+        self.addChild(self.soundOff1Button)
         
         self.soundOffButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
         soundOffButton.zPosition = -1
@@ -159,15 +179,65 @@ class GameScene: SKScene {
         self.addChild(self.soundOffButton)
         
         soundOnButton.hidden = false
+        soundOn1Button.hidden = true
+        soundOff1Button.hidden = true
         soundOffButton.hidden = true
 
-        jumpChinese();
+        jumpChinese()
     }
     
     func jumpChinese(){
         let action = SKAction.moveBy(CGVector(dx: 0, dy: 3000), duration: 10)
         let repeatForever = SKAction.repeatActionForever(action)
         chinese.runAction(repeatForever);
+    }
+    
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        for touch: AnyObject in touches {
+            let location = touch.locationInNode(self)
+
+            if self.nodeAtPoint(location) == self.soundOnButton || self.nodeAtPoint(location) == self.soundOffButton {
+                
+                if soundOffButton.hidden == true {
+                    soundOnButton.hidden = true
+                    soundOn1Button.hidden = false
+                    soundOnButton.hidden = true
+                    soundOffButton.hidden = true
+                }
+                else if soundOnButton.hidden == true {
+                    soundOnButton.hidden = true
+                    soundOn1Button.hidden = true
+                    soundOff1Button.hidden = false
+                    soundOffButton.hidden = true
+                }
+            }
+            
+            if self.nodeAtPoint(location) == self.musicOnButton || self.nodeAtPoint(location) == self.musicOffButton {
+                
+                if musicOffButton.hidden == true {
+                    musicOnButton.hidden = true
+                    musicOn1Button.hidden = false
+                    musicOnButton.hidden = true
+                    musicOffButton.hidden = true
+                }
+                else if musicOnButton.hidden == true {
+                    musicOnButton.hidden = true
+                    musicOn1Button.hidden = true
+                    musicOff1Button.hidden = false
+                    musicOffButton.hidden = true                }
+            }
+            
+            if self.nodeAtPoint(location) == self.noAdsButton {
+                noAdsButton.hidden = true
+                noAds1Button.hidden = false
+            }
+            
+            if self.nodeAtPoint(location) == self.rankingButton {
+                rankingButton.hidden = true
+                ranking1Button.hidden = false
+            }
+
+        }
     }
     
     override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
@@ -184,61 +254,49 @@ class GameScene: SKScene {
                 scene.size = skView.bounds.size
                 self.view?.presentScene(scene, transition: reveal)
             }
-        }
-        
-        for touch: AnyObject in touches {
-            let location = touch.locationInNode(self)
             
             if self.nodeAtPoint(location) == self.soundOnButton || self.nodeAtPoint(location) == self.soundOffButton {
                 
-                if soundOffButton.hidden == true {
+                if soundOn1Button.hidden == false {
                     soundOnButton.hidden = true
+                    soundOn1Button.hidden == false
+                    soundOff1Button.hidden = true
                     soundOffButton.hidden = false
                     audioPlayer.volume = 0
-                    
-                }
-                else if soundOnButton.hidden == true{
+                } else if soundOff1Button.hidden == false {
                     soundOnButton.hidden = false
+                    soundOn1Button.hidden == true
+                    soundOff1Button.hidden = true
                     soundOffButton.hidden = true
                     audioPlayer.volume = 1
                 }
             }
-//            else if self.nodeAtPoint(location) == self.soundOffButton { // Changed line
-//                soundOnButton.hidden = false
-//                soundOffButton.hidden = true
-//                println("sound on")
-//            }
             
+            if self.nodeAtPoint(location) == self.musicOnButton || self.nodeAtPoint(location) == self.musicOffButton {
+                
+                if musicOn1Button.hidden == false {
+                    musicOnButton.hidden = true
+                    musicOn1Button.hidden == false
+                    musicOff1Button.hidden = true
+                    musicOffButton.hidden = false
+                } else if musicOff1Button.hidden == false {
+                    musicOnButton.hidden = false
+                    musicOn1Button.hidden == true
+                    musicOff1Button.hidden = true
+                    musicOffButton.hidden = true
+                }
+            }
+
             
-//            if self.nodeAtPoint(location) == self.noAdsButton {
-//                noAdsButton.hidden = false
-//                noAds1Button.hidden = true
-//            }
-//            
-//            if self.nodeAtPoint(location) == self.rankingButton {
-//                rankingButton.hidden = false
-//                ranking1Button.hidden = true
-//            }
-//            
-//            if self.nodeAtPoint(location) === self.musicOnButton {
-//                musicOnButton.hidden = true
-//                musicOff1Button.hidden = true
-//                musicOffButton.hidden = false
-//                audioPlayer.stop()
-//            } else if self.nodeAtPoint(location) === self.musicOff1Button {
-//                musicOnButton.hidden = false
-//                musicOff1Button.hidden = false
-//                musicOffButton.hidden = true
-//                audioPlayer.play()
-//                
-//            }
-//            
-//            if self.nodeAtPoint(location) == self.soundOnButton {
-//                soundOnButton.hidden = true
-//                soundOff1Button.hidden = true
-//                soundOffButton.hidden = false
-//            }
+            if self.nodeAtPoint(location) == self.noAdsButton {
+                noAdsButton.hidden = false
+                noAds1Button.hidden = true
+            }
             
-        }
+            if self.nodeAtPoint(location) == self.rankingButton {
+                rankingButton.hidden = false
+                ranking1Button.hidden = true
+            }
     }
+}
 }

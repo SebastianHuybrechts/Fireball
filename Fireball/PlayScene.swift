@@ -16,13 +16,15 @@ class PlayScene: SKScene {
     var maxBackgroundY = CGFloat(0)
     var backgroundSpeed = 5
     
-    var dragonRightTexture = SKTexture(imageNamed: "Dragon Right")
-    var dragonLeftTexture = SKTexture(imageNamed: "Dragon Left")
-    var fireRightTexture = SKTexture(imageNamed: "Fire Right")
-    var fireLeftTexture = SKTexture(imageNamed: "Fire Left")
-    var fireRightMove = SKAction()
-    var fireLeftMove = SKAction()
-    var dragonsMoveAndRemove = SKAction()
+    var dragonRight = SKSpriteNode(imageNamed: "Dragon Right")
+    var dragonRight2 = SKSpriteNode(imageNamed: "Dragon Right")
+    var dragonLeft = SKSpriteNode(imageNamed: "Dragon Left")
+    
+    var fireRight = SKSpriteNode(imageNamed: "Fire Right")
+    var fireLeft = SKSpriteNode(imageNamed: "Fire Left")
+
+    let fireLeftMoveAction =  SKAction()
+    let fireRightMoveAction = SKAction()
     
     var ground = SKSpriteNode()
     
@@ -48,30 +50,54 @@ class PlayScene: SKScene {
         self.originalBackgroundPositionY = self.background.position.y
         self.maxBackgroundY = self.background.size.height - self.frame.size.height
         self.maxBackgroundY *= -1
-
-        // Dragon
-        // Movement of dragons
-        let distanceToMove = CGFloat(self.frame.size.height + 3.0 * dragonRightTexture.size().height * 2)
-        let moveDragons = SKAction.moveToY(-distanceToMove, duration: NSTimeInterval(0.01 * distanceToMove))
-        let removeDragons = SKAction.removeFromParent()
-        
-        dragonsMoveAndRemove = SKAction.sequence([moveDragons, removeDragons])
-        
-        // Spawn Dragons
-        let spawn = SKAction.runBlock({() in self.spawnDragons()})
-        let delay = SKAction.waitForDuration(NSTimeInterval(2.5))
-        let spawnThenDelay = SKAction.sequence([spawn,delay])
-        let spawnThenDelayForever = SKAction.repeatActionForever(spawnThenDelay)
-        self.runAction(spawnThenDelayForever)
-        
-        // Move fire
-//        let fireDistanceToMove = fireRightTexture.size().width
-//        let fireRightMove = SKAction.moveBy(CGVector(dx: fireDistanceToMove + 150, dy: 0), duration: 2)
-//        let fireLeftMove = SKAction.moveBy(CGVector(dx: -fireDistanceToMove - 150, dy: 0), duration: 2)
         
         // Phisics
         self.physicsWorld.gravity = CGVectorMake(0.0, -7.0)
         
+        // Dragons
+        dragonRight.setScale(0.5)
+        dragonRight.zPosition = 3
+        dragonRight.position = CGPointMake(CGRectGetMinX(self.frame) + 17, CGRectGetMaxY(self.frame) * 2/3)
+        addChild(dragonRight)
+        
+        dragonLeft.setScale(0.5)
+        dragonLeft.zPosition = 3
+        dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 17, CGRectGetMidY(self.frame))
+        addChild(dragonLeft)
+        
+        dragonRight2.setScale(0.5)
+        dragonRight2.zPosition = 3
+        dragonRight2.position = CGPointMake(CGRectGetMinX(self.frame) + 17, CGRectGetMidY(self.frame) * 2/3)
+        addChild(dragonRight2)
+        
+        // Fire
+        let fireDistanceToMoveLeft = fireLeft.size.width
+        let fireLeftMoveAction = SKAction.moveByX(-fireDistanceToMoveLeft * 2, y: 0, duration: 0.5)
+        
+        let fireDistanceToMoveRight = fireRight.size.width
+        let fireRightMoveAction = SKAction.moveByX(fireDistanceToMoveRight * 2, y: 0, duration: 0.5)
+        
+        fireLeft.zPosition = -1
+        fireLeft.position = CGPointMake(CGRectGetMaxX(self.frame), dragonLeft.position.y)
+        fireLeft.hidden = true
+        fireLeft.runAction(fireLeftMoveAction)
+        addChild(fireLeft)
+        
+        fireRight.zPosition = -1
+        fireRight.position = CGPointMake(CGRectGetMinX(self.frame), dragonRight.position.y)
+        fireRight.hidden = true
+        fireRight.runAction(fireRightMoveAction)
+        addChild(fireRight)
+        
+        if randomFire() < 15 {
+            fireLeft.runAction(fireLeftMoveAction)
+            fireLeft.hidden = false
+        }
+        if randomFire() > 85 {
+            fireRight.runAction(fireRightMoveAction)
+            fireRight.hidden = false
+        }
+
         // Ground
         var groundTexture = SKTexture(imageNamed: "Ground")
         
@@ -97,72 +123,34 @@ class PlayScene: SKScene {
         chinese.physicsBody!.dynamic = true
         chinese.physicsBody!.allowsRotation = false
         
+        // Bottom
+        let borderBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
+        self.physicsBody = borderBody
+                
         self.addChild(self.background)
         self.addChild(self.chinese)
         self.addChild(self.ground)
         self.addChild(self.scoreText)
-        
     }
     
     func randomFire() -> UInt32 {
         var fireRange = UInt32(0)..<UInt32(100)
         return fireRange.startIndex + arc4random_uniform(fireRange.endIndex - fireRange.startIndex + 1)
     }
-    
-    override func update(currentTime: NSTimeInterval) {
-        if self.background.position.y <= maxBackgroundY {
-            self.background.position.y = self.originalBackgroundPositionY
-        }
-        background.position.y -= CGFloat(self.backgroundSpeed)
-        
-        if self.chinese.position.y >= CGRectGetMaxY(self.frame) - self.chinese.size.height / 2 {
-            self.chinese.position.y = CGRectGetMaxY(self.frame) - self.chinese.size.height / 2
-        }
-    }
-    
-    func spawnDragons() {
-        let dragonPair = SKNode()
-        dragonPair.position = CGPointMake(0, self.frame.size.height)
-        
-        let dragonRight = SKSpriteNode(texture: dragonRightTexture)
-        dragonRight.setScale(0.5)
-        dragonRight.zPosition = 3
-        dragonRight.position = CGPointMake(CGRectGetMinX(self.frame) + 17, CGRectGetMaxY(self.frame) * 0.75)
-        dragonPair.addChild(dragonRight)
-        
-        let fireRight =  SKSpriteNode(texture: fireRightTexture)
-        fireRight.zPosition = -1
-        fireRight.position = CGPointMake(CGRectGetMinX(self.frame) + 160, dragonRight.position.y)
-        fireRight.hidden = true
-        dragonPair.addChild(fireRight)
-        
-        let dragonLeft = SKSpriteNode(texture: dragonLeftTexture)
-        dragonLeft.setScale(0.5)
-        dragonLeft.zPosition = 3
-        dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 17, CGRectGetMidY(self.frame))
-        dragonPair.addChild(dragonLeft)
-        
-        let fireLeft =  SKSpriteNode(texture: fireLeftTexture)
-        fireLeft.zPosition = -1
-        fireLeft.hidden = true
-        fireLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 160, dragonLeft.position.y)
-        dragonPair.addChild(fireLeft)
-        
-        dragonPair.runAction(dragonsMoveAndRemove)
-        self.addChild(dragonPair)
-        
-        if randomFire() < 30 {
-            //runAction(fireLeftMove)
-            fireLeft.hidden = false
-        }
-        
-        if randomFire() > 70 {
-            //runAction(fireRightMove)
-            fireRight.hidden = false
-        }
+        override func update(currentTime: NSTimeInterval) {
+            if self.background.position.y <= maxBackgroundY {
+                self.background.position.y = self.originalBackgroundPositionY
+            }
+            background.position.y -= CGFloat(self.backgroundSpeed)
+            ground.position.y -= CGFloat(self.backgroundSpeed)
 
-    }
+            
+//            if self.chinese.position.y >= CGRectGetMaxY(self.frame) - self.chinese.size.height / 2 {
+//                self.chinese.position.y = CGRectGetMaxY(self.frame) - self.chinese.size.height / 2
+//            }
+        }
     
+        
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */
         
