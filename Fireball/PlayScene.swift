@@ -19,6 +19,8 @@ class PlayScene: SKScene {
     var dragonRight = SKSpriteNode(imageNamed: "Dragon Right")
     var dragonRight2 = SKSpriteNode(imageNamed: "Dragon Right")
     var dragonLeft = SKSpriteNode(imageNamed: "Dragon Left")
+    var dragonLeft2 = SKSpriteNode(imageNamed: "Dragon Left")
+    var dragonLeft3 = SKSpriteNode(imageNamed: "Dragon Left")
     
     var fireRight = SKSpriteNode(imageNamed: "Fire Right")
     var fireLeft = SKSpriteNode(imageNamed: "Fire Left")
@@ -55,46 +57,60 @@ class PlayScene: SKScene {
         self.physicsWorld.gravity = CGVectorMake(0.0, -7.0)
         
         // Dragons
+        dragonLeft.setScale(0.5)
+        dragonLeft.zPosition = 3
+        dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 17, CGRectGetMidY(self.frame)*1/3)
+        addChild(dragonLeft)
+
         dragonRight.setScale(0.5)
         dragonRight.zPosition = 3
         dragonRight.position = CGPointMake(CGRectGetMinX(self.frame) + 17, CGRectGetMaxY(self.frame) * 2/3)
         addChild(dragonRight)
         
-        dragonLeft.setScale(0.5)
-        dragonLeft.zPosition = 3
-        dragonLeft.position = CGPointMake(CGRectGetMaxX(self.frame) - 17, CGRectGetMidY(self.frame))
-        addChild(dragonLeft)
+        dragonLeft2.setScale(0.5)
+        dragonLeft2.zPosition = 3
+        dragonLeft2.position = CGPointMake(CGRectGetMaxX(self.frame) - 17, CGRectGetMidY(self.frame))
+        addChild(dragonLeft2)
         
         dragonRight2.setScale(0.5)
         dragonRight2.zPosition = 3
         dragonRight2.position = CGPointMake(CGRectGetMinX(self.frame) + 17, CGRectGetMidY(self.frame) * 2/3)
         addChild(dragonRight2)
         
+        dragonLeft3.setScale(0.5)
+        dragonLeft3.zPosition = 3
+        dragonLeft3.position = CGPointMake(CGRectGetMaxX(self.frame) - 17, CGRectGetMidY(self.frame)*5/3)
+        addChild(dragonLeft3)
+        
         // Fire
         let fireDistanceToMoveLeft = fireLeft.size.width
-        let fireLeftMoveAction = SKAction.moveByX(-fireDistanceToMoveLeft * 2, y: 0, duration: 0.5)
+        let fireLeftMoveAction = SKAction.moveByX(-fireDistanceToMoveLeft * 2, y: 0, duration: 1)
+        let repeatLeftForever = SKAction.repeatActionForever(fireLeftMoveAction)
         
         let fireDistanceToMoveRight = fireRight.size.width
-        let fireRightMoveAction = SKAction.moveByX(fireDistanceToMoveRight * 2, y: 0, duration: 0.5)
+        let fireRightMoveAction = SKAction.moveByX(fireDistanceToMoveRight * 2, y: 0, duration: 1)
+        let repeatRightForever = SKAction.repeatActionForever(fireRightMoveAction)
         
         fireLeft.zPosition = -1
         fireLeft.position = CGPointMake(CGRectGetMaxX(self.frame), dragonLeft.position.y)
         fireLeft.hidden = true
-        fireLeft.runAction(fireLeftMoveAction)
+        fireLeft.runAction(repeatLeftForever)
         addChild(fireLeft)
         
         fireRight.zPosition = -1
         fireRight.position = CGPointMake(CGRectGetMinX(self.frame), dragonRight.position.y)
         fireRight.hidden = true
-        fireRight.runAction(fireRightMoveAction)
+        fireRight.runAction(repeatRightForever)
         addChild(fireRight)
         
+        randomFire()
+        
         if randomFire() < 15 {
-            fireLeft.runAction(fireLeftMoveAction)
+            fireLeft.runAction(repeatLeftForever)
             fireLeft.hidden = false
         }
         if randomFire() > 85 {
-            fireRight.runAction(fireRightMoveAction)
+            fireRight.runAction(repeatRightForever)
             fireRight.hidden = false
         }
 
@@ -106,7 +122,7 @@ class PlayScene: SKScene {
         ground.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinX(self.frame))
         ground.zPosition = 7
         
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 0.76))
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 0.95))
         
         ground.physicsBody!.dynamic = false
         
@@ -126,6 +142,7 @@ class PlayScene: SKScene {
         // Bottom
         let borderBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
         self.physicsBody = borderBody
+        self.physicsBody?.friction = 0
                 
         self.addChild(self.background)
         self.addChild(self.chinese)
@@ -144,11 +161,7 @@ class PlayScene: SKScene {
             background.position.y -= CGFloat(self.backgroundSpeed)
             ground.position.y -= CGFloat(self.backgroundSpeed)
 
-            
-//            if self.chinese.position.y >= CGRectGetMaxY(self.frame) - self.chinese.size.height / 2 {
-//                self.chinese.position.y = CGRectGetMaxY(self.frame) - self.chinese.size.height / 2
-//            }
-        }
+            }
     
         
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
@@ -159,7 +172,7 @@ class PlayScene: SKScene {
             self.nodeAtPoint(location)
             
             chinese.physicsBody?.velocity = CGVectorMake(0, 0)
-            chinese.physicsBody?.applyImpulse(CGVectorMake(0, 175))
+            chinese.physicsBody?.applyImpulse(CGVectorMake(0, 100))
 
         }
     }

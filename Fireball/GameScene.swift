@@ -91,7 +91,7 @@ class GameScene: SKScene {
         ground.zPosition = 2
         ground.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinX(self.frame))
         
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 0.76))
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSizeMake(self.frame.size.width, groundTexture.size().height * 0.95))
         
         ground.physicsBody!.dynamic = false
         self.addChild(ground)
@@ -104,7 +104,7 @@ class GameScene: SKScene {
         chinese.setScale(0.6)
         chinese.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMinY(self.frame) + groundTexture.size().height)
         
-        chinese.physicsBody = SKPhysicsBody(circleOfRadius: chinese.size.height / 2.0)
+        chinese.physicsBody = SKPhysicsBody(rectangleOfSize: chinese.size)
         chinese.physicsBody!.dynamic = true
         chinese.physicsBody!.allowsRotation = false
         chinese.zPosition = 3
@@ -133,21 +133,22 @@ class GameScene: SKScene {
         self.addChild(self.ranking1Button)
         
         // Music
-        self.musicOnButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
+        self.musicOnButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        soundOnButton.setScale(0.15)
         musicOnButton.setScale(0.15)
         self.addChild(self.musicOnButton)
         
-        self.musicOn1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
+        self.musicOn1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
         musicOn1Button.zPosition = -1
         musicOn1Button.setScale(0.15)
         self.addChild(self.musicOn1Button)
         
-        self.musicOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
+        self.musicOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
         musicOff1Button.zPosition = -0.5
         musicOff1Button.setScale(0.15)
         self.addChild(self.musicOff1Button)
         
-        self.musicOffButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
+        self.musicOffButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
         musicOffButton.zPosition = -1
         musicOffButton.setScale(0.15)
         self.addChild(self.musicOffButton)
@@ -159,21 +160,21 @@ class GameScene: SKScene {
         
         
         // Sound
-        self.soundOnButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        self.soundOnButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
         soundOnButton.setScale(0.15)
         self.addChild(self.soundOnButton)
         
-        self.soundOn1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        self.soundOn1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
         soundOn1Button.zPosition = -1
         soundOn1Button.setScale(0.15)
         self.addChild(self.soundOn1Button)
         
-        self.soundOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        self.soundOff1Button.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
         soundOff1Button.zPosition = -0.5
         soundOff1Button.setScale(0.15)
         self.addChild(self.soundOff1Button)
         
-        self.soundOffButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 70, CGRectGetMidY(self.frame) - 130)
+        self.soundOffButton.position = CGPointMake(CGRectGetMaxX(self.frame) - 50, CGRectGetMidY(self.frame) - 70)
         soundOffButton.zPosition = -1
         soundOffButton.setScale(0.15)
         self.addChild(self.soundOffButton)
@@ -189,7 +190,7 @@ class GameScene: SKScene {
     func jumpChinese(){
         let action = SKAction.moveBy(CGVector(dx: 0, dy: 3000), duration: 10)
         let repeatForever = SKAction.repeatActionForever(action)
-        chinese.runAction(repeatForever);
+        chinese.runAction(repeatForever)
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
